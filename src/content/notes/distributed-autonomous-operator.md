@@ -1,6 +1,6 @@
 ---
 title: Distributed Autonomous Operator
-description: A DAO for one: distributed capacity organized around a sovereign individual.
+description: "A DAO for one: distributed capacity organized around a sovereign individual."
 growth: budding
 planted: 2026-07-13
 lastTended: 2026-07-13
