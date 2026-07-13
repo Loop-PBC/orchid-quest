@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../config';
+interface Props { title?: string; description?: string; }
+const { title = siteConfig.name, description = siteConfig.description } = Astro.props;
+const pageTitle = title === siteConfig.name ? title : `${title} · ${siteConfig.name}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/">USS ORCHID</a>
+      <nav aria-label="Primary navigation">
+        <a href="/">Bridge</a>
+        <a href="/astrogation">Astrogation</a>
+        <a href="/notes/quill">Q.U.I.L.L.</a>
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>
+      <p>USS Orchid is a public research vessel of <a href="/notes/loop-cybernetics">LOOP Cybernetics PBC</a>.</p>
+      <p class="muted">Built in public. State remains with the operator.</p>
+    </footer>
+  </body>
+</html>

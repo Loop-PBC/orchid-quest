@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { buildGraph } from '../utils/graph';
+const notes = await getCollection('notes', ({ data }) => !data.draft);
+const graph = buildGraph(notes);
+---
+<BaseLayout title="Astrogation" description="Navigate the USS Orchid knowledge constellation.">
+  <section class="page-head">
+    <p class="eyebrow">ASTROGATION</p>
+    <h1>Mind galaxy</h1>
+    <p>Each star is a note. Each line marks an explicit relationship. Select an object to inspect it.</p>
+  </section>
+  <section class="graph-panel">
+    <svg id="graph" viewBox="0 0 1000 650" role="img" aria-label="Interactive graph of research notes"></svg>
+    <p class="muted graph-help">Drag stars to rearrange the map. Scroll to zoom. Select a star to enter its note.</p>
+  </section>
+  <script define:vars={{ graph }}>
+    import * as d3 from 'd3';
+    const svg = d3.select('#graph');
+    const width = 1000, height = 650;
+    const root = svg.append('g');
+    svg.call(d3.zoom().scaleExtent([0.35, 4]).on('zoom', e => root.attr('transform', e.transform)));
+    const links = root.append('g').attr('class','links').selectAll('line').data(graph.links).join('line');
+    const nodes = root.append('g').attr('class','nodes').selectAll('g').data(graph.nodes).join('g').style('cursor','pointer').on('click',(_,d) => location.href = `/notes/${d.id}`);
+    nodes.append('circle').attr('r', d => d.growth === 'evergreen' ? 14 : d.growth === 'budding' ? 11 : 8).attr('class', d => `node ${d.growth}`);
+    nodes.append('text').attr('x', 18).attr('y', 4).text(d => d.title);
+    const simulation = d3.forceSimulation(graph.nodes).force('link', d3.forceLink(graph.links).id(d => d.id).distance(150)).force('charge', d3.forceManyBody().strength(-400)).force('center', d3.forceCenter(width/2,height/2)).force('collision', d3.forceCollide(45)).on('tick', () => {
+      links.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+      nodes.attr('transform',d=>`translate(${d.x},${d.y})`);
+    });
+    nodes.call(d3.drag().on('start',(e,d)=>{if(!e.active) simulation.alphaTarget(.3).restart(); d.fx=d.x;d.fy=d.y;}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;}).on('end',(e,d)=>{if(!e.active) simulation.alphaTarget(0);d.fx=null;d.fy=null;}));
+  </script>
+</BaseLayout>

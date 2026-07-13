@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+export async function getStaticPaths() {
+  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  return notes.map(note => ({ params: { slug: note.id }, props: { note } }));
+}
+const { note } = Astro.props;
+const { Content } = await render(note);
+const growthIcon = { seedling: '🌱', budding: '🌿', evergreen: '🌳' } as const;
+---
+<BaseLayout title={note.data.title} description={note.data.description}>
+  <article class="note-shell">
+    <header class="note-header">
+      <p class="eyebrow">{note.data.constellation} · {growthIcon[note.data.growth]} {note.data.growth}</p>
+      <h1>{note.data.title}</h1>
+      <p class="dek">{note.data.description}</p>
+      <div class="tags">{note.data.tags.map((tag:string) => <span>#{tag}</span>)}</div>
+    </header>
+    <div class="prose"><Content /></div>
+    <nav class="note-nav"><a href="/">← Return to Bridge</a><a href="/astrogation">Open Astrogation →</a></nav>
+  </article>
+</BaseLayout>
