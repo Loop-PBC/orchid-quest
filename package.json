@@ -1,0 +1,27 @@
+{
+  "name": "orchid-quest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "USS Orchid: an interactive digital constellation built with Astro.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/rss": "^4.0.14",
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.16.6",
+    "d3": "^7.9.0",
+    "typescript": "^5.7.2",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3"
+  }
+}

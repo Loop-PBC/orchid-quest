@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort((a,b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+const growthIcon = { seedling: '🌱', budding: '🌿', evergreen: '🌳' } as const;
+---
+<BaseLayout>
+  <section class="hero">
+    <p class="eyebrow">IDENTIFICATION SIGNAL RECEIVED</p>
+    <h1>Welcome aboard the <em>USS Orchid</em>.</h1>
+    <p class="mission-copy">Your mission? To envision. To seek out new ideas and new possibilities. To boldly think what no mind has thought before.</p>
+    <div class="actions">
+      <a class="button primary" href="/notes/mission-001">Begin Mission 001</a>
+      <a class="button" href="/astrogation">Open Astrogation</a>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">CURRENT MISSION</p><h2>The Augmented Individual</h2></div>
+      <span class="status">ACTIVE INVESTIGATION</span>
+    </div>
+    <p>Follow the signal from felt experience to formal meaning, viable communication, cybernetic feedback, and distributed autonomous operation.</p>
+    <ol class="route">
+      <li><a href="/notes/kansei-engineering">Kansei Engineering</a></li>
+      <li><a href="/notes/computational-semantics">Computational Semantics</a></li>
+      <li><a href="/notes/aac">Augmentative and Alternative Communication</a></li>
+      <li><a href="/notes/cybernetics">Cybernetics</a></li>
+      <li><a href="/notes/quill">Q.U.I.L.L.</a></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="section-heading"><div><p class="eyebrow">SHIP'S LIBRARY</p><h2>Charted objects</h2></div><a href="/astrogation">View constellation →</a></div>
+    <div class="card-grid">
+      {notes.map(note => (
+        <article class="card">
+          <div class="card-meta"><span>{growthIcon[note.data.growth]} {note.data.growth}</span><span>{note.data.constellation}</span></div>
+          <h3><a href={`/notes/${note.id}`}>{note.data.title}</a></h3>
+          <p>{note.data.description}</p>
+          <div class="tags">{note.data.tags.slice(0,3).map(tag => <span>#{tag}</span>)}</div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
