@@ -15,8 +15,11 @@ const graph = buildGraph(notes);
     <svg id="graph" viewBox="0 0 1000 650" role="img" aria-label="Interactive graph of research notes"></svg>
     <p class="muted graph-help">Drag stars to rearrange the map. Scroll to zoom. Select a star to enter its note.</p>
   </section>
-  <script define:vars={{ graph }}>
+  <script id="graph-data" type="application/json" set:html={JSON.stringify(graph)}></script>
+  <script>
     import * as d3 from 'd3';
+    const source = document.querySelector('#graph-data');
+    const graph = JSON.parse(source?.textContent ?? '{"nodes":[],"links":[]}');
     const svg = d3.select('#graph');
     const width = 1000, height = 650;
     const root = svg.append('g');
